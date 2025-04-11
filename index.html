@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -39,12 +40,14 @@
     }
   </style>
 </head>
-<body>
+<body onload="document.getElementById('start-game').style.display = 'inline-block';">
   <h1>Can You Spot Football?</h1>
   <button id="start-game" class="button" onclick="startGame()">Start Game</button>
   <div id="game" style="display: none;">
     <div id="countdown"></div>
-    <img id="image" src="" alt="Cat Image" />
+    <div style="display: flex; justify-content: center;">
+      <img id="image" src="" alt="Cat Image" />
+    </div>
     <br />
     <button class="button" onclick="answer(true)">Yes</button>
     <button class="button" onclick="answer(false)">No</button>
@@ -162,6 +165,7 @@
       document.getElementById("result").innerText =
         `Game Over! You got ${correct} out of ${shownImages.length} correct (${Math.round(correct / shownImages.length * 100)}%)`;
       document.getElementById("play-again").style.display = "inline-block";
+      document.getElementById("start-game").style.display = "inline-block";
     }
   </script>
 </body>
