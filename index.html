@@ -27,20 +27,30 @@
       font-size: 24px;
       margin-top: 30px;
     }
+    #countdown {
+      font-size: 20px;
+      margin-bottom: 10px;
+      color: #666;
+    }
+    #play-again {
+      display: none;
+      margin-top: 20px;
+    }
   </style>
 </head>
 <body>
   <h1>Can You Spot Football?</h1>
   <div id="game">
+    <div id="countdown"></div>
     <img id="image" src="" alt="Cat Image" />
     <br />
     <button class="button" onclick="answer(true)">Yes</button>
     <button class="button" onclick="answer(false)">No</button>
     <div id="result"></div>
+    <button id="play-again" class="button" onclick="startGame()">Play Again</button>
   </div>
 
   <script>
-    // All JPG images from the folder
     const allImages = [
       "FB(1).jpg", "FB(10).jpg", "FB(11).jpg", "FB(2).jpg", "FB(3).jpg", "FB(4).jpg",
       "FB(5).jpg", "FB(6).jpg", "FB(7).jpg", "FB(8).jpg", "FB(9).jpg", "FB.jpg",
@@ -54,7 +64,6 @@
       "HEIF Image(9).jpg", "HEIF Image.jpg"
     ];
 
-    // Define which images are Football
     const targetImages = new Set(
       allImages.filter(name => name.startsWith("FB"))
     );
@@ -63,6 +72,8 @@
     let correct = 0;
     let shownImages = [];
     let interval;
+    let countdownInterval;
+    let countdown = 3;
 
     function shuffle(array) {
       for (let i = array.length - 1; i > 0; i--) {
@@ -78,39 +89,81 @@
       current = 0;
       correct = 0;
       document.getElementById("result").innerText = "";
+      document.getElementById("play-again").style.display = "none";
+      document.getElementById("image").style.display = "block";
+      document.getElementById("countdown").style.display = "block";
       showImage();
       interval = setInterval(() => {
         nextImage();
+      }, 3000);
+      startCountdown();
+    }
+
+    function startCountdown() {
+      countdown = 3;
+      document.getElementById("countdown").innerText = `Next in: ${countdown}`;
+      countdownInterval = setInterval(() => {
+        countdown--;
+        if (countdown > 0) {
+          document.getElementById("countdown").innerText = `Next in: ${countdown}`;
+        } else {
+          clearInterval(countdownInterval);
+        }
       }, 1000);
     }
 
     function showImage() {
       const img = document.getElementById("image");
-      img.src = "./" + shownImages[current];
+      img.src = shownImages[current];
     }
 
     function answer(isYes) {
+      clearInterval(interval);
+      clearInterval(countdownInterval);
+
       const imgName = shownImages[current];
       const isFootball = targetImages.has(imgName);
       if ((isYes && isFootball) || (!isYes && !isFootball)) {
         correct++;
       }
-      nextImage();
+
+      current++;
+      if (current >= shownImages.length) {
+        endGame();
+      } else {
+        showImage();
+        interval = setInterval(() => {
+          nextImage();
+        }, 3000);
+        startCountdown();
+      }
     }
 
     function nextImage() {
       current++;
       if (current >= shownImages.length) {
         clearInterval(interval);
-        document.getElementById("image").src = "";
-        document.getElementById("result").innerText =
-          `Game Over! You got ${correct} out of ${shownImages.length} correct (${Math.round(correct / shownImages.length * 100)}%)`;
+        clearInterval(countdownInterval);
+        endGame();
       } else {
         showImage();
+        startCountdown();
       }
     }
 
+    function endGame() {
+      document.getElementById("image").src = "final.jpg";
+      document.getElementById("countdown").style.display = "none";
+      document.getElementById("result").innerText =
+        `Game Over! You got ${correct} out of ${shownImages.length} correct (${Math.round(correct / shownImages.length * 100)}%)`;
+      document.getElementById("play-again").style.display = "inline-block";
+    }
+
     startGame();
+  </script>
+</body>
+</html>
+
   </script>
 </body>
 </html>
