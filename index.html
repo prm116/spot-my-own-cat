@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Spot My Shorthair</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      background-color: #f9f9f9;
+    }
+    #game {
+      margin-top: 30px;
+    }
+    #image {
+      max-width: 80%;
+      max-height: 400px;
+      border: 5px solid #ccc;
+      margin-bottom: 20px;
+    }
+    .button {
+      font-size: 18px;
+      padding: 10px 20px;
+      margin: 10px;
+    }
+    #result {
+      font-size: 24px;
+      margin-top: 30px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Can You Spot Football?</h1>
+  <div id="game">
+    <img id="image" src="" alt="Cat Image" />
+    <br />
+    <button class="button" onclick="answer(true)">Yes</button>
+    <button class="button" onclick="answer(false)">No</button>
+    <div id="result"></div>
+  </div>
+
+  <script>
+    // All JPG images from the folder
+    const allImages = [
+      "FB(1).jpg", "FB(10).jpg", "FB(11).jpg", "FB(2).jpg", "FB(3).jpg", "FB(4).jpg",
+      "FB(5).jpg", "FB(6).jpg", "FB(7).jpg", "FB(8).jpg", "FB(9).jpg", "FB.jpg",
+      "HEIF Image(1).jpg", "HEIF Image(10).jpg", "HEIF Image(11).jpg", "HEIF Image(12).jpg",
+      "HEIF Image(13).jpg", "HEIF Image(14).jpg", "HEIF Image(15).jpg", "HEIF Image(16).jpg",
+      "HEIF Image(17).jpg", "HEIF Image(18).jpg", "HEIF Image(19).jpg", "HEIF Image(2).jpg",
+      "HEIF Image(20).jpg", "HEIF Image(21).jpg", "HEIF Image(22).jpg", "HEIF Image(23).jpg",
+      "HEIF Image(24).jpg", "HEIF Image(25).jpg", "HEIF Image(26).jpg", "HEIF Image(27).jpg",
+      "HEIF Image(28).jpg", "HEIF Image(29).jpg", "HEIF Image(3).jpg", "HEIF Image(4).jpg",
+      "HEIF Image(5).jpg", "HEIF Image(6).jpg", "HEIF Image(7).jpg", "HEIF Image(8).jpg",
+      "HEIF Image(9).jpg", "HEIF Image.jpg"
+    ];
+
+    // Define which images are Football
+    const targetImages = new Set(
+      allImages.filter(name => name.startsWith("FB"))
+    );
+
+    let current = 0;
+    let correct = 0;
+    let shownImages = [];
+    let interval;
+
+    function shuffle(array) {
+      for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+      }
+    }
+
+    function startGame() {
+      shownImages = [...allImages];
+      shuffle(shownImages);
+      shownImages = shownImages.slice(0, 20);
+      current = 0;
+      correct = 0;
+      document.getElementById("result").innerText = "";
+      showImage();
+      interval = setInterval(() => {
+        nextImage();
+      }, 1000);
+    }
+
+    function showImage() {
+      const img = document.getElementById("image");
+      img.src = shownImages[current];
+    }
+
+    function answer(isYes) {
+      const imgName = shownImages[current];
+      const isFootball = targetImages.has(imgName);
+      if ((isYes && isFootball) || (!isYes && !isFootball)) {
+        correct++;
+      }
+      nextImage();
+    }
+
+    function nextImage() {
+      current++;
+      if (current >= shownImages.length) {
+        clearInterval(interval);
+        document.getElementById("image").src = "";
+        document.getElementById("result").innerText =
+          `Game Over! You got ${correct} out of ${shownImages.length} correct (${Math.round(correct / shownImages.length * 100)}%)`;
+      } else {
+        showImage();
+      }
+    }
+
+    startGame();
+  </script>
+</body>
+</html>
