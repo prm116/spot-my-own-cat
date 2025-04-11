@@ -38,11 +38,23 @@
       display: none;
       margin-top: 20px;
     }
+    #intro {
+      max-width: 600px;
+      margin: 30px auto;
+      font-size: 18px;
+      color: #444;
+    }
   </style>
 </head>
 <body onload="document.getElementById('start-game').style.display = 'inline-block';">
   <h1>Can You Spot Football?</h1>
+  <div id="intro">
+    <p>Football is hiding among a group of other American Shorthair cats. 🐱</p>
+    <p>You will be shown 20 images—each for 3 seconds. Click <strong>“Yes”</strong> if you think it's Football, or <strong>“No”</strong> if not.</p>
+    <p>Your goal is to identify Football correctly every time. Good luck!</p>
+  </div>
   <button id="start-game" class="button" onclick="startGame()">Start Game</button>
+
   <div id="game" style="display: none;">
     <div id="countdown"></div>
     <div style="display: flex; justify-content: center;">
@@ -89,6 +101,7 @@
 
     function startGame() {
       document.getElementById("start-game").style.display = "none";
+      document.getElementById("intro").style.display = "none";
       document.getElementById("game").style.display = "block";
 
       shownImages = [...allImages];
@@ -160,7 +173,8 @@
     }
 
     function endGame() {
-      document.getElementById("image").src = "final.jpg";
+      const finalImage = correct === shownImages.length ? "success.jpg" : "final.jpg";
+      document.getElementById("image").src = finalImage;
       document.getElementById("countdown").style.display = "none";
       document.getElementById("result").innerText =
         `Game Over! You got ${correct} out of ${shownImages.length} correct (${Math.round(correct / shownImages.length * 100)}%)`;
